@@ -1,10 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import SignUp from "./screens/SignUp";
+import { auth } from "./firebase";
+import Groups from "./screens/Groups";
+import { StateProvider } from "./StateContext";
+import GroupNavigation from "./screens/GroupNavigation";
 export default function App() {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      console.log(user);
+      setUser(user);
+    });
+  }, []);
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <StateProvider>{user ? <GroupNavigation /> : <SignUp />}</StateProvider>
       <StatusBar style="auto" />
     </View>
   );
@@ -13,8 +25,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
   },
 });
